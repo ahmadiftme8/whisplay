@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Moon, Clock } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { clsx } from "clsx";
-import { useMixStore } from "@/store/useMixStore";
+import { Button, MenuList, MenuListItem, Separator } from "react95";
 
 interface SleepTimerMenuProps {
     onSetTimer: (minutes: number) => void;
@@ -49,61 +46,35 @@ export const SleepTimerMenu: React.FC<SleepTimerMenuProps> = ({ onSetTimer }) =>
     };
 
     return (
-        <div className="relative z-50">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={clsx(
-                    "p-2 rounded-full transition-all border",
-                    activeTime ? "bg-amber-glow/20 border-amber-glow text-amber-glow shadow-led-glow" : "bg-transparent border-transparent text-white/50 hover:bg-white/10"
-                )}
-            >
-                <div className="flex items-center gap-2">
-                    <Moon size={20} />
-                    {timeLeft !== null && (
-                        <span className="text-xs font-mono w-10 text-left">
-                            {formatTime(timeLeft)}
-                        </span>
-                    )}
-                </div>
-            </button>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+            <Button active={isOpen} onClick={() => setIsOpen(!isOpen)}>
+                {timeLeft !== null ? formatTime(timeLeft) : "Timer"}
+            </Button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <>
-                        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="absolute right-0 top-12 w-48 bg-metal-light border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col"
-                        >
-                            <div className="p-3 bg-black/20 border-b border-white/5 text-xs text-white/40 uppercase tracking-widest font-mono">
-                                Sleep Timer
-                            </div>
-                            {[15, 30, 60].map((min) => (
-                                <button
-                                    key={min}
-                                    onClick={() => handleSetTime(min)}
-                                    className={clsx(
-                                        "flex items-center gap-3 p-3 text-sm transition-colors hover:bg-white/5 text-left",
-                                        activeTime === min ? "text-amber-glow" : "text-white/80"
-                                    )}
-                                >
-                                    <Clock size={16} />
-                                    {min} Minutes
-                                </button>
-                            ))}
-                            <div className="h-px bg-white/5 my-1" />
-                            <button
-                                onClick={() => handleSetTime(0)}
-                                className="p-3 text-sm text-red-400 hover:bg-white/5 text-left transition-colors"
+            {isOpen && (
+                <div style={{ position: 'absolute', bottom: '100%', right: 0, marginBottom: 4, zIndex: 100 }}>
+                    <MenuList>
+                        {[15, 30, 60].map((min) => (
+                            <MenuListItem
+                                key={min}
+                                onClick={() => handleSetTime(min)}
                             >
-                                Disable Timer
-                            </button>
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
+                                <span style={{ width: 20, display: 'inline-block' }}>
+                                    {activeTime === min && "✓"}
+                                </span>
+                                {min} Minutes
+                            </MenuListItem>
+                        ))}
+                        <Separator />
+                        <MenuListItem onClick={() => handleSetTime(0)}>
+                            <span style={{ width: 20, display: 'inline-block' }}>
+                                {activeTime === null && "✓"}
+                            </span>
+                            Disable
+                        </MenuListItem>
+                    </MenuList>
+                </div>
+            )}
         </div>
     );
 };

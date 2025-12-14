@@ -161,10 +161,41 @@ export const useAudioEngine = () => {
         }
     };
 
+    // Playback Control
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlayback = async () => {
+        if (!isReady) return;
+
+        // Access raw context to handle suspension correctly across Tone.js versions/types
+        const ctx = Tone.context as any;
+
+        if (Tone.context.state === 'running') {
+            if (ctx.rawContext && ctx.rawContext.suspend) {
+                await ctx.rawContext.suspend();
+            } else if (ctx.suspend) {
+                await ctx.suspend();
+            }
+            setIsPlaying(false);
+        } else {
+            await Tone.start(); // Helper to resume
+            setIsPlaying(true);
+        }
+    };
+
+    // Initialize state on load
+    useEffect(() => {
+        if (isReady) {
+            setIsPlaying(Tone.context.state === 'running');
+        }
+    }, [isReady]);
+
     return {
         initializeAudio,
         isReady,
         loadTrack,
         setTimer,
+        isPlaying,
+        togglePlayback,
     };
 };
