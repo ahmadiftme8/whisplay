@@ -1,8 +1,34 @@
 "use client";
 
 import React from "react";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle, ThemeProvider, StyleSheetManager } from "styled-components";
+import isPropValid from "@emotion/is-prop-valid";
 import { styleReset } from "react95";
+
+// List of props to block from leaking to the DOM
+const blockedProps = new Set([
+  'active',
+  'fullWidth',
+  'primary',
+  'square',
+  'shadow',
+  'noPadding',
+  'fixed',
+  'isMultiRow',
+  'variant',
+  'hasMarks',
+  'isFocused',
+  'menu'
+]);
+
+function shouldForwardProp(propName: string, target: any) {
+  if (typeof target === "string") {
+    // For HTML elements, forward if valid HTML attribute AND not blocked
+    return isPropValid(propName) && !blockedProps.has(propName);
+  }
+  // For other styled components, always forward
+  return true;
+}
 // @ts-ignore
 import original from "react95/dist/themes/original";
 // @ts-ignore
@@ -11,7 +37,7 @@ import ms_sans_serif from "react95/dist/fonts/ms_sans_serif.woff2";
 import ms_sans_serif_bold from "react95/dist/fonts/ms_sans_serif_bold.woff2";
 
 interface ProvidersProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const GlobalStyles = createGlobalStyle`
@@ -34,10 +60,12 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 export function Providers({ children }: ProvidersProps) {
-    return (
-        <>
-            <GlobalStyles />
-            <ThemeProvider theme={original}>{children}</ThemeProvider>
-        </>
-    );
+  return (
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <>
+        <GlobalStyles />
+        <ThemeProvider theme={original}>{children}</ThemeProvider>
+      </>
+    </StyleSheetManager>
+  );
 }
