@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAudioEngine } from "@/hooks/useAudioEngine";
-import { RotaryKnob } from "@/components/ui/RotaryKnob";
+import { Fader } from "@/components/ui/Fader";
 import { useMixStore } from "@/store/useMixStore";
 import { Play } from "lucide-react";
 import { clsx } from "clsx";
@@ -32,14 +32,14 @@ export default function Home() {
   };
 
   return (
-    <main className="relative h-[100dvh] w-full bg-metal-dark overflow-hidden flex flex-col items-center justify-center">
+    <main className="relative h-[100dvh] w-full bg-metal-dark overflow-hidden flex flex-col items-center">
       {/* Background Texture Overlay (Brushed Metal) */}
       <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
-      {/* Header / Top Bar */}
-      <header className="absolute top-0 w-full p-6 flex justify-between items-center bg-metal/50 backdrop-blur-sm border-b border-white/5 z-10">
-        <h1 className="text-xl font-bold tracking-widest text-amber-glow/80 uppercase">Whisplay</h1>
-        <div className="flex gap-4 items-center">
+      {/* Header / Top Bar - Compact on Mobile */}
+      <header className="w-full shrink-0 h-16 px-4 flex justify-between items-center bg-metal/50 backdrop-blur-sm border-b border-white/5 z-10">
+        <h1 className="text-lg md:text-xl font-bold tracking-widest text-amber-glow/80 uppercase truncate mr-4">Whisplay</h1>
+        <div className="flex gap-2 items-center shrink-0">
           {/* Drift Toggle */}
           <button
             onClick={() => setDrift(!driftEnabled)}
@@ -51,7 +51,7 @@ export default function Home() {
             )}
             title="Toggle Drift (LFO)"
           >
-            <Waves size={20} />
+            <Waves size={18} />
           </button>
 
           {/* Sleep Timer */}
@@ -59,40 +59,44 @@ export default function Home() {
         </div>
       </header>
 
-      {/* The Deck (4 Channels) */}
-      <div className="grid grid-cols-4 gap-2 w-full max-w-2xl h-full pt-20 pb-10 px-4">
+      {/* The Deck (Responsive Flex Layout) */}
+      <div className="flex-1 w-full max-w-4xl p-4 flex gap-2 md:gap-4 items-stretch justify-center h-full min-h-0">
         {tracks.map((track) => (
           <div
             key={track.id}
-            className="relative flex flex-col items-center justify-center gap-8 bg-metal border border-white/5 rounded-full py-8 shadow-2xl"
+            className="flex-1 relative flex flex-col items-center bg-metal border border-white/5 rounded-2xl md:rounded-full py-4 shadow-2xl min-w-0"
           >
-            {/* Channel Label/Button */}
-            {/* Channel Label/Button */}
-            <button
-              onClick={() => setEditingTrackId(track.id)}
-              className="absolute top-6 flex flex-col items-center gap-1 group"
-              title="Change Sound"
-            >
-              <div className="p-2 rounded-full bg-black/20 border border-white/5 group-hover:border-amber-glow/50 group-hover:text-amber-glow transition-all shadow-inner">
-                <ListMusic size={14} className="opacity-50 group-hover:opacity-100" />
-              </div>
-              <span className="text-[10px] font-mono text-metal-light group-hover:text-amber-glow transition-colors uppercase tracking-widest">
-                {track.name}
-              </span>
-            </button>
+            {/* Top Section: Icon & Header */}
+            <div className="shrink-0 flex flex-col items-center gap-2 mb-2 w-full px-1">
+              <button
+                onClick={() => setEditingTrackId(track.id)}
+                className="flex flex-col items-center gap-1 group w-full pt-2"
+                title="Change Sound"
+              >
+                <div className="p-2 md:p-3 rounded-full bg-black/20 border border-white/5 group-hover:border-amber-glow/50 group-hover:text-amber-glow transition-all shadow-inner">
+                  <ListMusic size={16} className="opacity-50 group-hover:opacity-100" />
+                </div>
+                <span className="text-[10px] md:text-xs font-mono text-metal-light group-hover:text-amber-glow transition-colors uppercase tracking-widest truncate w-full text-center">
+                  {track.name}
+                </span>
+              </button>
+            </div>
 
-            {/* Volume Knob */}
-            <RotaryKnob
-              value={track.volume}
-              onChange={(val) => setTrackVolume(track.id, val)}
-              label="GAIN"
-            />
+            {/* Fader Area (Flex-1 to fill vertical space) */}
+            <div className="flex-1 w-full flex justify-center min-h-0 py-2">
+              <Fader
+                value={track.volume}
+                onChange={(val) => setTrackVolume(track.id, val)}
+                className="h-full"
+              // label="GAIN" // Label moved/removed for cleaner mobile logic
+              />
+            </div>
 
-            {/* Mute/Solo Indicators (Placeholder) */}
-            <div className="mt-auto h-1 w-12 bg-black/50 rounded-full overflow-hidden">
+            {/* Bottom: Mute/Activity Area */}
+            <div className="shrink-0 mt-2 h-4 w-4 md:h-6 md:w-6 rounded-full bg-black/50 shadow-inner flex items-center justify-center">
               <div
-                className="h-full bg-amber-glow transition-all duration-300"
-                style={{ width: `${track.volume}%`, opacity: track.muted ? 0.2 : 1 }}
+                className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-amber-glow transition-opacity duration-300"
+                style={{ opacity: track.muted ? 0 : (track.volume > 0 ? 1 : 0.2) }}
               />
             </div>
           </div>

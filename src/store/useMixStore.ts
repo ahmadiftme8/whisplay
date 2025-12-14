@@ -20,23 +20,16 @@ export interface SoundOption {
 
 export const AVAILABLE_SOUNDS: SoundOption[] = [
     // Nature
-    { id: 'rain', name: 'Heavy Rain', category: 'nature', url: '/sounds/nature/rain.mp3' },
+    { id: 'rain', name: 'Baran (Rain)', category: 'nature', url: '/sounds/nature/baran.mp3' },
+    { id: 'ocean', name: 'Relax Sea', category: 'nature', url: '/sounds/nature/Relax Sound - Sea.mp3' },
+    // Flashholders until user adds more
     { id: 'thunder', name: 'Thunderstorm', category: 'nature', url: '/sounds/nature/thunder.mp3' },
-    { id: 'wind', name: 'Howling Wind', category: 'nature', url: '/sounds/nature/wind.mp3' },
-    { id: 'fire', name: 'Crackling Fire', category: 'nature', url: '/sounds/nature/fire.mp3' },
-    { id: 'ocean', name: 'Ocean Waves', category: 'nature', url: '/sounds/nature/ocean.mp3' },
-    { id: 'crickets', name: 'Night Crickets', category: 'nature', url: '/sounds/nature/crickets.mp3' },
 
     // White Noise
-    { id: 'white', name: 'White Noise', category: 'white-noise', url: '/sounds/white-noise/white.mp3' },
-    { id: 'pink', name: 'Pink Noise', category: 'white-noise', url: '/sounds/white-noise/pink.mp3' },
-    { id: 'brown', name: 'Brown Noise', category: 'white-noise', url: '/sounds/white-noise/brown.mp3' },
-    { id: 'fan', name: 'Box Fan', category: 'white-noise', url: '/sounds/white-noise/fan.mp3' },
+    { id: 'brown', name: 'Brown Noise', category: 'white-noise', url: '/sounds/white-noise/Deep_Sleep_Brown_Noise_Womb_Sound_Brown_Noise_All_Night,_Loop.mp3' },
 
     // Ambient
-    { id: 'drone-1', name: 'Deep Space', category: 'ambient', url: '/sounds/ambient/deep-space.mp3' },
-    { id: 'drone-2', name: 'Warm Pad', category: 'ambient', url: '/sounds/ambient/warm-pad.mp3' },
-    { id: 'drone-3', name: 'Meditate', category: 'ambient', url: '/sounds/ambient/meditate.mp3' },
+    { id: 'drone-1', name: 'Deep Sleep', category: 'ambient', url: '/sounds/ambient/Deep_Sleep_Music_Calming_Music_for_Sleep_Fall_Asleep_Stress_Relief.mp3' },
 ];
 
 interface MixStore {
@@ -54,10 +47,10 @@ export const useMixStore = create<MixStore>((set) => ({
     masterVolume: 80,
     driftEnabled: false,
     tracks: [
-        { id: 0, name: "Rain", color: "bg-blue-900", volume: 50, muted: false, sampleUrl: "/sounds/nature/rain.mp3" },
-        { id: 1, name: "Thunder", color: "bg-purple-900", volume: 20, muted: false, sampleUrl: "/sounds/nature/thunder.mp3" },
-        { id: 2, name: "Wind", color: "bg-gray-700", volume: 40, muted: false, sampleUrl: "/sounds/nature/wind.mp3" },
-        { id: 3, name: "Fire", color: "bg-orange-900", volume: 0, muted: false, sampleUrl: "/sounds/nature/fire.mp3" },
+        { id: 0, name: "Rain", color: "bg-blue-900", volume: 50, muted: false, sampleUrl: "/sounds/nature/baran.mp3" },
+        { id: 1, name: "Ocean", color: "bg-blue-500", volume: 40, muted: false, sampleUrl: "/sounds/nature/Relax Sound - Sea.mp3" },
+        { id: 2, name: "Brown Noise", color: "bg-gray-700", volume: 30, muted: false, sampleUrl: "/sounds/white-noise/Deep_Sleep_Brown_Noise_Womb_Sound_Brown_Noise_All_Night,_Loop.mp3" },
+        { id: 3, name: "Ambient", color: "bg-orange-900", volume: 20, muted: false, sampleUrl: "/sounds/ambient/Deep_Sleep_Music_Calming_Music_for_Sleep_Fall_Asleep_Stress_Relief.mp3" },
     ],
     setTrackVolume: (id, val) =>
         set((state) => ({
